@@ -15,7 +15,7 @@ pnconfig = PNConfiguration()
 
 pnconfig.subscribe_key = os.environ.get('PUBNUB_SUBSCRIBE_KEY')
 pnconfig.publish_key = os.environ.get('PUBNUB_PUBLISH_KEY')
-pnconfig.user_id = "john_sd3b_dkit"
+pnconfig.user_id = "john_iot_pi_zero"
 pubnub = PubNub(pnconfig)
 
 my_channel = "johns_sd3b_pi"
@@ -43,12 +43,8 @@ class MySubscribeCallback(SubscribeCallback):
 
     def message(self, pubnub, message):
         print(message.message)
-        #received = json.loads(message.message)
         received = message.message
-        if isinstance(received, str):
-            received = json.loads(received)
-        print(type(received))
-        if isinstance(received, dict) and "buzzer" in received.keys():
+        if "buzzer" in received.keys():
             if received["buzzer"] == "on":
                 data["alarm"] = True
             else:
@@ -90,10 +86,10 @@ def motion_detection():
         if GPIO.input(PIR_pin):
             print("Motion detected")
             beep(4)
-            publish(my_channel, {"motion":"Yes"})
+            publish(my_channel, {"motion":"Motion Detected"})
             trigger = True
         elif trigger:
-            publish(my_channel, {"motion":"No"})
+            publish(my_channel, {"motion":"No Motion Detected"})
             trigger = False
         if data["alarm"]:
             beep(2)
