@@ -13,8 +13,7 @@ import requests
 load_dotenv()
 
 response = requests.get('https://sd3b.online/get_device_token-12345')
-token_json = json.loads(response.json())
-token = token_json['token']
+token = response.json()
 print(token)
 pnconfig = PNConfiguration()
 
