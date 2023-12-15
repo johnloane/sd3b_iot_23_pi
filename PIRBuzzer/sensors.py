@@ -8,15 +8,24 @@ from pubnub.enums import PNStatusCategory, PNOperationType
 import json
 import RPi.GPIO as GPIO
 import time, threading
+import requests
 
 load_dotenv()
 
+response = requests.get('https://sd3b.online/get_device_token-12345')
+token_json = json.loads(response.json())
+token = token_json['token']
+print(token)
 pnconfig = PNConfiguration()
+
+
 
 pnconfig.subscribe_key = os.environ.get('PUBNUB_SUBSCRIBE_KEY')
 pnconfig.publish_key = os.environ.get('PUBNUB_PUBLISH_KEY')
-pnconfig.user_id = "john_iot_pi_zero"
+pnconfig.user_id = "12345"
+pnconfig.auth_key = token
 pubnub = PubNub(pnconfig)
+
 
 my_channel = "johns_sd3b_pi"
 
@@ -37,6 +46,7 @@ class MySubscribeCallback(SubscribeCallback):
             pass
         elif status.category == PNStatusCategory.PNConnectedCategory:
             #pubnub.publish().channel(my_channel).message("Hello world").pn_async(my_publish_callback)
+            print("Connected to channel")
             pass
         elif status.category == PNStatusCategory.PNDecryptionErrorCategory:
             pass
